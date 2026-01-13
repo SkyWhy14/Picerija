@@ -29,74 +29,96 @@ kļūdas picu izveides loģikā, cenas aprēķināšanā u.tml. (4p).
  * 
  */
 
+import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.regex.Pattern;
-
+import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Picerija {
-	public static String VirknesParbaude(String zinojums,String noklusejums) {
-		String virkne ;
-		
-		do {
-			virkne = JOptionPane.showInputDialog(zinojums,noklusejums);
-			if(virkne == null)
-				return null;
-			
-			virkne = virkne.trim();
-			
-		}while(!Pattern.matches("^[\\p{L} .]+$", virkne));
-		return virkne;
-	}
-	public static int SkaitlaParbaude(String zinojums,int min,int max) {
-		
-		int skaitlis;
-		while(true) {
-			String ievade = JOptionPane.showInputDialog(null,zinojums,"Datu ievade",JOptionPane.INFORMATION_MESSAGE);
-			if(ievade == null)
-				return -1;
-			
-			try {
-				skaitlis = Integer.parseInt(ievade);
-				if(skaitlis <min || skaitlis > max) {
-					JOptionPane.showMessageDialog(null, "Noradits nederigs intervals","Nekorekti dati",JOptionPane.WARNING_MESSAGE);
-					continue;
-				}
-				return skaitlis;
-				
-			}catch(NumberFormatException e) {
-				JOptionPane.showMessageDialog(null, "Netika ievadits vesels skaitlis","Nekorekti dati",JOptionPane.ERROR_MESSAGE);
-			}
-		}
-	}
-	static void main(String[] args) {
-		String izvele;
-		String [] darbibusarakst = {"Saglabāt piegādes adresi",
-									"Saglaba pircēja vārdu","Saglabā talruni",
-									"Aprēķina picas cenu",
-									"Picas piegāde",
-									"Apskatit pasūtijumu",
-									"Apturet"};
-		ArrayList<String> piegadesAdrese = new ArrayList<>();
-		ArrayList<String> pircējaVards = new ArrayList<>();
-		ArrayList<String> talrunis = new ArrayList<>();
-		Queue<String> pasutijumi = new LinkedList<>();
-		Queue<String> izpilditiePasutijumi = new LinkedList<>();
-		do {
-			izvele =(String) JOptionPane.showInputDialog(null,"Izvelies darbibu","Darbibu izvele",JOptionPane.QUESTION_MESSAGE,null,darbibusarakst,darbibusarakst[0]);
-			if(izvele == null)
-				izvele = "Apturet";
-			switch(izvele) {
-			case "Veikt pasutijumu": 
-				
-				break;
-			
-			}
-		}while(!izvele.equals("Apturet"));
 
-	}
-	
-	
+    public static String VirknesParbaude(String zinojums,String noklusejums) {
+        String virkne;
+        do {
+            virkne = JOptionPane.showInputDialog(zinojums,noklusejums);
+            if(virkne == null)
+                return null;
+            virkne = virkne.trim();
+        } while(!Pattern.matches("^[\\p{L} .]+$", virkne));
+        return virkne;
+    }
+
+    public static int SkaitlaParbaude(String zinojums,int min,int max) {
+        int skaitlis;
+        while(true) {
+            String ievade = JOptionPane.showInputDialog(null,zinojums,"Datu ievade",JOptionPane.INFORMATION_MESSAGE);
+            if(ievade == null)
+                return -1;
+            try {
+                skaitlis = Integer.parseInt(ievade);
+                if(skaitlis <min || skaitlis > max) {
+                    JOptionPane.showMessageDialog(null, "Nederīgs intervāls","Nekorekti dati",JOptionPane.WARNING_MESSAGE);
+                    continue;
+                }
+                return skaitlis;
+            }catch(NumberFormatException e) {
+                JOptionPane.showMessageDialog(null, "Jāievada vesels skaitlis","Nekorekti dati",JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public static ArrayList<String> piegadesAdrese = new ArrayList<>();
+    public static ArrayList<String> pircējaVards = new ArrayList<>();
+    public static ArrayList<String> talrunis = new ArrayList<>();
+    public static Queue<String> pasutijumi = new LinkedList<>();
+    public static Queue<String> izpilditiePasutijumi = new LinkedList<>();
+
+    public static void main(String[] args) {
+
+        JFrame frame = new JFrame("Picērija");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.setLayout(new GridLayout(0, 1));
+
+        String[] labels = {
+            "Saglabāt piegādes adresi",
+            "Saglabāt pircēja vārdu",
+            "Saglabāt tālruni",
+            "Aprēķina picas cenu",
+            "Picas piegāde",
+            "Apskatīt pasūtījumu",
+            "Apskatīt saglabātos vārdus",
+            "Apturēt"
+        };
+
+        for (String s : labels) {
+            JButton btn = new JButton(s);
+            frame.add(btn);
+
+            btn.addActionListener(e -> {
+                if (s.equals("Saglabāt pircēja vārdu")) {
+                    String v = VirknesParbaude("Ievadi pircēja vārdu","Jānis Bērziņš");
+                    if(v != null) {
+                        pircējaVards.add(v);
+                        JOptionPane.showMessageDialog(null, "Pircēja vārds saglabāts!");
+                    }
+                }
+                else if(s.equals("Apskatīt saglabātos vārdus")) {
+                    String visiVardi = String.join("\n", pircējaVards);
+                    JOptionPane.showMessageDialog(null, "Saglabātie vārdi:\n" + visiVardi);
+                }
+                else if (s.equals("Apturēt")) {
+                    System.exit(0);
+                }
+                else {
+                    System.out.println("Clicked: " + s);
+                }
+            });
+        }
+
+        frame.setVisible(true);
+    }
 }
