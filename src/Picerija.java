@@ -29,6 +29,9 @@ kļūdas picu izveides loģikā, cenas aprēķināšanā u.tml. (4p).
  * 
  */
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
@@ -67,6 +70,32 @@ public class Picerija {
 				JOptionPane.showMessageDialog(null, "Netika ievadits vesels skaitlis","Nekorekti dati",JOptionPane.ERROR_MESSAGE);
 			}
 		}
+	}
+	static void main(String[] args) {
+		String izvele;
+		String [] darbibusarakst = {"Saglabāt piegādes adresi",
+									"Saglaba pircēja vārdu","Saglabā talruni",
+									"Aprēķina picas cenu",
+									"Picas piegāde",
+									"Apskatit pasūtijumu",
+									"Apturet"};
+		ArrayList<String> piegadesAdrese = new ArrayList<>();
+		ArrayList<String> pircējaVards = new ArrayList<>();
+		ArrayList<String> talrunis = new ArrayList<>();
+		Queue<String> pasutijumi = new LinkedList<>();
+		Queue<String> izpilditiePasutijumi = new LinkedList<>();
+		do {
+			izvele =(String) JOptionPane.showInputDialog(null,"Izvelies darbibu","Darbibu izvele",JOptionPane.QUESTION_MESSAGE,null,darbibusarakst,darbibusarakst[0]);
+			if(izvele == null)
+				izvele = "Apturet";
+			switch(izvele) {
+			case "Veikt pasutijumu": 
+				
+				break;
+			
+			}
+		}while(!izvele.equals("Apturet"));
+
 	}
 	
 	
