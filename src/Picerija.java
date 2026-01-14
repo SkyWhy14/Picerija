@@ -148,9 +148,30 @@ public class Picerija  {
 						null, new String[]{"Tomāti", "Gurķi", "Sīpoli", "Kukurūza"}, "Tomāti");
             } else if (atbilde == JOptionPane.NO_OPTION) {
                JOptionPane.showMessageDialog(null, "Pasūtījums veiksmīgi reģistrēts:\n" + pasutijums);
-            }
-            JOptionPane.showMessageDialog(null, "Vai vēlaties pasutit kaut kādu dzērienu:\n" + pasutijums);
-            
+            } 
+         
+         int atbilde2 = JOptionPane.showConfirmDialog(
+                 null,
+                 "Vai velaties pasutit kaut kadu dzērienu?",
+                 "Dzērieni",
+                 JOptionPane.YES_NO_OPTION
+         );
+         if(atbilde2 == JOptionPane.YES_OPTION) {
+			 String dzersieni = (String) JOptionPane.showInputDialog(null, "Izvēlies dzērienu",
+					 "Dzērieni", JOptionPane.QUESTION_MESSAGE,
+					 null, new String[]{"Kola", "Fanta", "Sprite", "Ūdens"}, "Kola");
+			 //var izveleties daudzumu ml ar dropdown
+			 String dzeriensMl = (String) JOptionPane.showInputDialog(null, "Izvēlies dzēriena daudzumu (ml)",
+					 "Dzēriens", JOptionPane.QUESTION_MESSAGE,
+					 null, new String[]{"250 ml ", "400 ml ", "500 ml "}, "250 ml ");
+			 		 JOptionPane.showMessageDialog(null, "Pasūtījums veiksmīgi reģistrēts:\n" + pasutijums + "\nDzēriens: " + dzersieni + " " + dzeriensMl);
+			 
+		 } else if (atbilde2 == JOptionPane.NO_OPTION) {
+			JOptionPane.showMessageDialog(null, "Pasūtījums veiksmīgi reģistrēts:\n" + pasutijums);
+		 }
+        
+         
+         
         });
 
         // --- APSKATĪT PASŪTĪJUMUS ---
