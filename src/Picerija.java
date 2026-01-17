@@ -2,122 +2,192 @@ import java.awt.Color;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Picerija {
-    public static Queue<Pica> pasutijumi = new LinkedList<>();
-    public static Queue<Pica> izpilditiePasutijumi = new LinkedList<>();
+    private static Queue<String> pasutijumi = new LinkedList<>();
+
+    // Metode, lai pārbaudītu virkni (ne tukša)
+    public static String VirknesParbaude(String zinojums, String noklusejums) {
+        String virkne;
+        do {
+            virkne = JOptionPane.showInputDialog(zinojums, noklusejums);
+            if (virkne == null) return null;
+            virkne = virkne.trim();
+        } while (virkne.isEmpty());
+        return virkne;
+    }
 
     public static void main(String[] args) {
 
         JFrame frame = new JFrame("Picērija");
-        frame.setSize(400, 400);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(550, 400);
         frame.getContentPane().setBackground(Color.PINK);
         frame.setLayout(null);
 
-        JButton btn1 = new JButton("Jauns Pasūtījums");
-        btn1.setBounds(50, 50, 150, 40);
+        JButton btnAdd = new JButton("Jauns Pasūtījums");
+        btnAdd.setBounds(50, 50, 400, 40);
 
-        JButton btn2 = new JButton("Apskatīt Pasūtījumus");
-        btn2.setBounds(50, 120, 150, 40);
+        JButton btnView = new JButton("Skatīt Aktīvos");
+        btnView.setBounds(50, 110, 400, 40);
 
-        JButton btn3 = new JButton("Pabeigt Pasūtījumu");
-        btn3.setBounds(50, 190, 150, 40);
+        JButton btnDone = new JButton("Pabeigt nākamo");
+        btnDone.setBounds(50, 170, 400, 40);
+        JButton btnExit = new JButton("Iziet");
+        btnExit.setBounds(50, 230, 400, 40);
 
-        JButton btn4 = new JButton("Iziet");
-        btn4.setBounds(50, 260, 150, 40);
-
-        frame.add(btn1);
-        frame.add(btn2);
-        frame.add(btn3);
-        frame.add(btn4);
+        frame.add(btnAdd);
+        frame.add(btnView);
+        frame.add(btnDone);
+        frame.add(btnExit);
         frame.setVisible(true);
 
         // --- JAUNS PASŪTĪJUMS ---
-        btn1.addActionListener(e -> {
-            String izvele = (String) JOptionPane.showInputDialog(null,
-                    "Izvēlies picas izmēru", "Picas Izmērs",
-                    JOptionPane.QUESTION_MESSAGE, null,
-                    new String[]{"Mazā", "Vidējā", "Lielā"}, "Vidējā");
+        btnAdd.addActionListener(e -> {
+            // --- Picas un bildes GIF ---
+            String[] picasNosaukums = {"Margarita - 6€", "Veģetāra - 7€", "Gaļas - 8€"};
+            ImageIcon[] picasBildes = {
+                    new ImageIcon(".//bildes//pica.png"),
+                    new ImageIcon(".//bildes//vegana.png"),
+                    new ImageIcon(".//images//galas.gif")
+            };
 
-            if (izvele == null) return;
+            // Izvēle ar tekstu pogām
+            int picIzvele = JOptionPane.showOptionDialog(
+                    null,
+                    "Izvēlies picu:",
+                    "Pica",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    picasNosaukums,
+                    picasNosaukums[0]
+            );
+            if (picIzvele < 0) return;
 
-            String piedevas = (String) JOptionPane.showInputDialog(null,
-                    "Izvēlies piedevas", "Picas Piedevas",
-                    JOptionPane.QUESTION_MESSAGE, null,
-                    new String[]{"Siers", "Šampinjoni", "Paprika", "Olīvas", "Kartupeļi"}, "Siers");
+            // Cena pēc izvēles
+            double cena = (picIzvele == 0 ? 6 : picIzvele == 1 ? 7 : 8);
 
-            if (piedevas == null) return;
+            // Parāda izvēlēto picu GIF
+            JOptionPane.showMessageDialog(null,
+                    "Izvēlēta pica: " + picasNosaukums[picIzvele],
+                    "Pica",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    picasBildes[picIzvele]);
+            //Papildus piedavas
+            String [] piedavas = {"Nav","Paprika +0.5€","Sēnes +0.5€","Extra siers +1€","Olīvas +0.5€"};
+            int piedavasIzvele = JOptionPane.showOptionDialog(null,
+					"Izvēlies papildus piedevas:",
+					"Piedevas",
+					JOptionPane.DEFAULT_OPTION,
+					JOptionPane.QUESTION_MESSAGE,
+					null, piedavas, piedavas[0]);
+            			if(piedavasIzvele <0)
+            				return;
+            			if(piedavasIzvele ==1 || piedavasIzvele ==2 || piedavasIzvele ==4)
+            				cena +=0.5;
+            			if (piedavasIzvele ==3)
+            				cena +=1;
+            			
 
-            String papildus = "";
-            int atbilde = JOptionPane.showConfirmDialog(null,
-                    "Vai vēlies papildus piedevas?", "Piedevas", JOptionPane.YES_NO_OPTION);
-            if (atbilde == JOptionPane.YES_OPTION) {
-                papildus = (String) JOptionPane.showInputDialog(null,
-                        "Izvēlies papildus piedevas", "Papildus Piedevas",
-                        JOptionPane.QUESTION_MESSAGE, null,
-                        new String[]{"Tomāti", "Gurķi", "Sīpoli", "Kukurūza"}, "Tomāti");
+            // --- Dzērieni ---
+            String[] drinks = {"Nav", "Cola +2€", "Sula +2€", "Tēja +1€"};
+            int dzIzvele = JOptionPane.showOptionDialog(null,
+                    "Izvēlies dzērienu:",
+                    "Dzērieni",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, drinks, drinks[0]);
+            if (dzIzvele < 0) return;
+
+            String dz = drinks[dzIzvele];
+            if (dzIzvele == 1 || dzIzvele == 2) cena += 2;
+            if (dzIzvele == 3) cena += 1;
+
+            // --- Piegāde ---
+            int delivery = JOptionPane.showConfirmDialog(
+                    null,
+                    "Vai izmantot piegādi? (+3€)",
+                    "Piegāde",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            String piegade;
+            String klientaVards = "";
+            String adrese = "";
+            String telefons = "";
+
+            if (delivery == JOptionPane.YES_OPTION) {
+                cena += 3;
+                piegade = "Piegāde";
+
+                klientaVards = VirknesParbaude("Ievadi klienta vārdu:", "Jānis Bērziņš");
+                if (klientaVards == null) return;
+
+                adrese = VirknesParbaude("Ievadi piegādes adresi:", "Brīvības iela 10, Rīga");
+                if (adrese == null) return;
+
+                telefons = VirknesParbaude("Ievadi telefona numuru:", "+371 24234242");
+                if (telefons == null) return;
+
+            } else {
+                piegade = "Uz vietas";
             }
 
-            double cena = 5.0; // pamata cena
-            if (izvele.equals("Vidējā")) cena += 2;
-            if (izvele.equals("Lielā")) cena += 4;
+            // --- Sagatavo pasūtījuma tekstu ---
+            String pasutijums = "Pica: " + picasNosaukums[picIzvele] +
+					"\nPapildus piedevas: " + piedavas[piedavasIzvele] +
+					"\nDzēriens: " + dz +
+					"\nPiegāde: " + piegade +
+					(delivery == JOptionPane.YES_OPTION ?
+							"\nVārds: " + klientaVards +
+									"\nAdrese: " + adrese +
+									"\nTelefons: " + telefons : "") +
+					"\n\nKopējā cena: " + String.format("%.2f", cena) + " EUR";
 
-            Pica pica = new ParastaPica("Margherita", cena, izvele, piedevas, papildus);
+            pasutijumi.add(pasutijums);
 
-            // Dzēriens
-            String dz = "";
-            int d = JOptionPane.showConfirmDialog(null,
-                    "Vai vēlies dzērienu?", "Dzērieni", JOptionPane.YES_NO_OPTION);
-
-            if (d == JOptionPane.YES_OPTION) {
-                String dzersieni = (String) JOptionPane.showInputDialog(null,
-                        "Dzēriens", "Piedāvājums",
-                        JOptionPane.QUESTION_MESSAGE, null,
-                        new String[]{"Kola", "Fanta", "Sprite", "Ūdens"}, "Kola");
-
-                String ml = (String) JOptionPane.showInputDialog(null,
-                        "Daudzums", "Izvēlies ml",
-                        JOptionPane.QUESTION_MESSAGE, null,
-                        new String[]{"250 ml", "400 ml", "500 ml"}, "250 ml");
-
-                dz = " | Dzēriens: " + dzersieni + " " + ml;
-            }
-
-            // Saglabā pasūtījumu
-            pasutijumi.add(new ParastaPica("Margherita" + dz, cena, izvele, piedevas, papildus));
-
-            JOptionPane.showMessageDialog(null, "Pasūtījums veiksmīgi reģistrēts:\n" + pica + dz);
+            JOptionPane.showMessageDialog(null,
+                    "Rindā pievienots!\n" + pasutijums,
+                    "Pasūtījums",
+                    JOptionPane.INFORMATION_MESSAGE,
+                    picasBildes[picIzvele]);
         });
 
         // --- APSKATĪT PASŪTĪJUMUS ---
-        btn2.addActionListener(e -> {
+        btnView.addActionListener(e -> {
             if (pasutijumi.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Nav aktīvu pasūtījumu.");
-            } else {
-                StringBuilder sb = new StringBuilder();
-                for (Pica p : pasutijumi) {
-                    sb.append(p.toString()).append("\n");
-                }
-                JOptionPane.showMessageDialog(null, "Aktīvie pasūtījumi:\n\n" + sb.toString());
+                return;
             }
+
+            StringBuilder sb = new StringBuilder();
+            for (String p : pasutijumi) {
+                sb.append("• ").append(p).append("\n\n");
+            }
+
+            JOptionPane.showMessageDialog(null, sb.toString(), "Aktīvie Pasūtījumi",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
 
         // --- PABEIGT PASŪTĪJUMU ---
-        btn3.addActionListener(e -> {
+        btnDone.addActionListener(e -> {
             if (pasutijumi.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Nav pasūtījumu, ko pabeigt.");
+                JOptionPane.showMessageDialog(null, "Nav ko pabeigt!");
             } else {
-                Pica izpildits = pasutijumi.poll();
-                izpilditiePasutijumi.add(izpildits);
-                JOptionPane.showMessageDialog(null, "Pabeigts: " + izpildits);
+                String done = pasutijumi.poll();
+                JOptionPane.showMessageDialog(null,
+                        "Pasūtījums izpildīts!\n\n" + done);
             }
         });
-
-        // --- IZIEST ---
-        btn4.addActionListener(e -> System.exit(0));
+        // --- IZEJA ---
+        btnExit.addActionListener(e -> {
+			JOptionPane.showMessageDialog(null, "Picerija aizvērta! Uz redzēšanos!");
+			System.exit(0);
+		});
     }
 }

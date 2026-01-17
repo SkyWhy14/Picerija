@@ -1,12 +1,4 @@
-import java.awt.Color;
-import java.util.LinkedList;
-import java.util.Queue;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-// --- Abstraktā Pica klase ---
-abstract class Pica {
+public abstract class Pica {
     private String nosaukums;
     private double cena;
     private String izmers;
@@ -25,12 +17,16 @@ abstract class Pica {
         return cena;
     }
 
+    public String getIzmers() {
+        return izmers;
+    }
+
     @Override
     public String toString() {
         String allPiedevas = piedevas;
         if (papildusPiedevas != null && !papildusPiedevas.isEmpty()) {
             allPiedevas += ", " + papildusPiedevas;
         }
-        return nosaukums + " | Izmērs: " + izmers + " | Piedevas: " + allPiedevas + " | Cena: " + cena + " EUR";
+        return nosaukums + " | " + izmers + " | " + allPiedevas + " | " + cena + " EUR";
     }
 }
