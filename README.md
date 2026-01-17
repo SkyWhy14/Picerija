@@ -9,3 +9,5 @@
 - [x] Pievienota iespēja aprēķinat picas cenu
 - [x] Pievienota iespēja izveidot pasūtijumu
 - [x] Pievienota iespēja apskatīt pasūtijumus un uzpildīt tos
+- [x] Pieivenota iespeja saglabāt izpilditos pasūtijumus
+- [x] Pievienota iespeja apskatit izpilditos pasūtijumus
