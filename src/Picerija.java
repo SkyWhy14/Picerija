@@ -1,13 +1,15 @@
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.swing.*;
 
 public class Picerija {
     private static Queue<String> pasutijumi = new LinkedList<>();
+    private static ArrayList<String> adreses = new ArrayList<>(); // Saglabā piegādes adreses
+    private static ArrayList<String > numurs = new ArrayList<>();
 
-    // Metode, lai pārbaudītu virkni (ne tukša)
     public static String VirknesParbaude(String zinojums, String noklusejums) {
         String virkne;
         do {
@@ -19,7 +21,6 @@ public class Picerija {
     }
 
     public static void main(String[] args) {
-
         JFrame frame = new JFrame("Picērija");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(550, 400);
@@ -27,39 +28,40 @@ public class Picerija {
         frame.setLayout(null);
 
         JButton btnAdd = new JButton("Jauns Pasūtījums");
-        btnAdd.setBounds(50, 50, 400, 40);
+        btnAdd.setBounds(30, 30, 400, 40);
         JButton btnView = new JButton("Skatīt Aktīvos");
-        btnView.setBounds(50, 110, 400, 40);
+        btnView.setBounds(30, 80, 400, 40);
         JButton btnDone = new JButton("Pabeigt nākamo");
-        btnDone.setBounds(50, 170, 400, 40);
+        btnDone.setBounds(30, 130, 400, 40);
+        JButton btnAdreses = new JButton("Apskatīt adreses");
+        btnAdreses.setBounds(30, 180, 400, 40);
+        JButton btnNumurs = new JButton("Apskatīt numurus");
+        btnNumurs.setBounds(30, 240, 400, 40);
+        
         JButton btnExit = new JButton("Iziet");
-        btnExit.setBounds(50, 230, 400, 40);
+        btnExit.setBounds(30, 290, 400, 40);
 
         frame.add(btnAdd);
         frame.add(btnView);
         frame.add(btnDone);
+        frame.add(btnAdreses);
+        frame.add(btnNumurs);
         frame.add(btnExit);
         frame.setVisible(true);
 
         btnAdd.addActionListener(e -> {
             try {
-                // --- Picas nosaukumi ---
                 String[] picasNosaukums = {"Margarita - 6€", "Veģetāra - 7€", "Gaļas - 8€"};
-
-                // --- Bildes no GitHub RAW links ---
                 String[] urls = {
                         "https://raw.githubusercontent.com/SkyWhy14/Picerija/0cc1e73ecd6767f73bcb06807d67d173faf55a50/bildes/pica.png",
                         "https://raw.githubusercontent.com/SkyWhy14/Picerija/0cc1e73ecd6767f73bcb06807d67d173faf55a50/bildes/vegana.png",
-                        "https://raw.githubusercontent.com/SkyWhy14/Picerija/a509ed866c63a19b6b4df6e8b3d129acae70759b/bildes/galas.png\r\n"
-                        + ""
+                        "https://raw.githubusercontent.com/SkyWhy14/Picerija/a509ed866c63a19b6b4df6e8b3d129acae70759b/bildes/galas.png"
                 };
-
                 ImageIcon[] picasBildes = new ImageIcon[urls.length];
                 for (int i = 0; i < urls.length; i++) {
                     picasBildes[i] = new ImageIcon(new URL(urls[i]));
                 }
 
-                // Izvēle ar tekstu
                 int picIzvele = JOptionPane.showOptionDialog(
                         null,
                         "Izvēlies picu:",
@@ -74,7 +76,6 @@ public class Picerija {
 
                 double cena = (picIzvele == 0 ? 6 : picIzvele == 1 ? 7 : 8);
 
-                // Parāda izvēlēto picu ar GitHub bildi
                 JOptionPane.showMessageDialog(
                         null,
                         "Izvēlēta pica: " + picasNosaukums[picIzvele],
@@ -82,50 +83,30 @@ public class Picerija {
                         JOptionPane.INFORMATION_MESSAGE,
                         picasBildes[picIzvele]
                 );
-                //piedavas
-                String [] piedevas = {"Nav", "Sēnes +1€", "Paprika +1€", "Olīvas +1€", "Extra siers +2€"};
-                int piedIzvele = JOptionPane.showOptionDialog(null,
-						"Izvēlies papildus piedevas:",
-						"Piedevas",
-						JOptionPane.DEFAULT_OPTION,
-						JOptionPane.QUESTION_MESSAGE,
-						null, piedevas, piedevas[0]);
+
+                String[] piedevas = {"Nav", "Sēnes +1€", "Paprika +1€", "Olīvas +1€", "Extra siers +2€"};
+                int piedIzvele = JOptionPane.showOptionDialog(null, "Izvēlies papildus piedevas:", "Piedevas",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, piedevas, piedevas[0]);
                 if (piedIzvele < 0) return;
-                if (piedIzvele == 1 || piedIzvele == 2 || piedIzvele == 3) cena += 1;
+                if (piedIzvele >= 1 && piedIzvele <= 3) cena += 1;
                 if (piedIzvele == 4) cena += 2;
-                String [] merci = {"Nav", "Kečups +0.50€", "Čili mērce +0.50€", "Barbekjū mērce +0.50€"};
-                int mercIzvele = JOptionPane.showOptionDialog(null,
-                "Izvēlies mērci:",
-                "Mērces",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null, merci, merci[0]);
+
+                String[] merci = {"Nav", "Kečups +0.50€", "Čili mērce +0.50€", "Barbekjū mērce +0.50€"};
+                int mercIzvele = JOptionPane.showOptionDialog(null, "Izvēlies mērci:", "Mērces",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, merci, merci[0]);
                 if (mercIzvele < 0) return;
                 if (mercIzvele != 0) cena += 0.5;
-                
 
-                // Dzērieni
                 String[] drinks = {"Nav", "Cola +2€", "Sula +2€", "Tēja +1€"};
-                int dzIzvele = JOptionPane.showOptionDialog(null,
-                        "Izvēlies dzērienu:",
-                        "Dzērieni",
-                        JOptionPane.DEFAULT_OPTION,
-                        JOptionPane.QUESTION_MESSAGE,
-                        null, drinks, drinks[0]);
+                int dzIzvele = JOptionPane.showOptionDialog(null, "Izvēlies dzērienu:", "Dzērieni",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, drinks, drinks[0]);
                 if (dzIzvele < 0) return;
-
                 String dz = drinks[dzIzvele];
                 if (dzIzvele == 1 || dzIzvele == 2) cena += 2;
                 if (dzIzvele == 3) cena += 1;
 
-                // Piegāde
-                int piegade1 = JOptionPane.showConfirmDialog(
-                        null,
-                        "Vai izmantot piegādi? (+3€)",
-                        "Piegāde",
-                        JOptionPane.YES_NO_OPTION
-                );
-
+                int piegade1 = JOptionPane.showConfirmDialog(null, "Vai izmantot piegādi? (+3€)",
+                        "Piegāde", JOptionPane.YES_NO_OPTION);
                 String piegade;
                 String klientaVards = "";
                 String adrese = "";
@@ -140,23 +121,26 @@ public class Picerija {
                     if (adrese == null) return;
                     telefons = VirknesParbaude("Ievadi telefona numuru:", "+371 24234242");
                     if (telefons == null) return;
+
+                    // Saglabā adresi masīvā
+                    adreses.add(adrese);
+                    numurs.add(telefons);
+
                 } else {
                     piegade = "Uz vietas";
                 }
 
-                // Sagatavo pasūtījumu tekstu
                 String pasutijums = "Pica: " + picasNosaukums[picIzvele] +
-						"\nPiedevas: " + piedevas[piedIzvele] +
-						"\nMērce: " + merci[mercIzvele] +
-						"\nDzēriens: " + dz +
-						"\nPasūtījuma veids: " + piegade;
+                        "\nPiedevas: " + piedevas[piedIzvele] +
+                        "\nMērce: " + merci[mercIzvele] +
+                        "\nDzēriens: " + dz +
+                        "\nPasūtījuma veids: " + piegade;
                 if (piegade1 == JOptionPane.YES_OPTION) {
-					pasutijums += "\nKlienta vārds: " + klientaVards +
-							"\nAdrese: " + adrese +
-							"\nTelefons: " + telefons;
-				}
+                    pasutijums += "\nKlienta vārds: " + klientaVards +
+                            "\nAdrese: " + adrese +
+                            "\nTelefons: " + telefons;
+                }
                 pasutijums += String.format("\nKopējā cena: %.2f EUR", cena);
-                
 
                 pasutijumi.add(pasutijums);
 
@@ -177,10 +161,8 @@ public class Picerija {
                 JOptionPane.showMessageDialog(null, "Nav aktīvu pasūtījumu.");
                 return;
             }
-
             StringBuilder sb = new StringBuilder();
             for (String p : pasutijumi) sb.append("• ").append(p).append("\n\n");
-
             JOptionPane.showMessageDialog(null, sb.toString(), "Aktīvie Pasūtījumi",
                     JOptionPane.INFORMATION_MESSAGE);
         });
@@ -193,6 +175,31 @@ public class Picerija {
                 JOptionPane.showMessageDialog(null, "Pasūtījums izpildīts!\n\n" + done);
             }
         });
+
+        btnAdreses.addActionListener(e -> {
+            if (adreses.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nav saglabātu adreses pasūtījumiem.");
+            } else {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < adreses.size(); i++) {
+                    sb.append((i + 1)).append(". ").append(adreses.get(i)).append("\n");
+                }
+                JOptionPane.showMessageDialog(null, sb.toString(), "Piegādes adreses",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        });
+        btnNumurs.addActionListener(e -> {
+			if (numurs.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Nav saglabātu telefona numurus pasūtījumiem.");
+			} else {
+				StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < numurs.size(); i++) {
+					sb.append((i + 1)).append(". ").append(numurs.get(i)).append("\n");
+				}
+				JOptionPane.showMessageDialog(null, sb.toString(), "Telefona numuri",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+		});
 
         btnExit.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Picerija aizvērta! Uz redzēšanos!");
