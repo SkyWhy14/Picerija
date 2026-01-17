@@ -50,7 +50,8 @@ public class Picerija {
                 String[] urls = {
                         "https://raw.githubusercontent.com/SkyWhy14/Picerija/0cc1e73ecd6767f73bcb06807d67d173faf55a50/bildes/pica.png",
                         "https://raw.githubusercontent.com/SkyWhy14/Picerija/0cc1e73ecd6767f73bcb06807d67d173faf55a50/bildes/vegana.png",
-                        "https://raw.githubusercontent.com/SkyWhy14/Picerija/0cc1e73ecd6767f73bcb06807d67d173faf55a50/bildes/galas.png"
+                        "https://raw.githubusercontent.com/SkyWhy14/Picerija/a509ed866c63a19b6b4df6e8b3d129acae70759b/bildes/galas.png\r\n"
+                        + ""
                 };
 
                 ImageIcon[] picasBildes = new ImageIcon[urls.length];
@@ -81,6 +82,27 @@ public class Picerija {
                         JOptionPane.INFORMATION_MESSAGE,
                         picasBildes[picIzvele]
                 );
+                //piedavas
+                String [] piedevas = {"Nav", "Sēnes +1€", "Paprika +1€", "Olīvas +1€", "Extra siers +2€"};
+                int piedIzvele = JOptionPane.showOptionDialog(null,
+						"Izvēlies papildus piedevas:",
+						"Piedevas",
+						JOptionPane.DEFAULT_OPTION,
+						JOptionPane.QUESTION_MESSAGE,
+						null, piedevas, piedevas[0]);
+                if (piedIzvele < 0) return;
+                if (piedIzvele == 1 || piedIzvele == 2 || piedIzvele == 3) cena += 1;
+                if (piedIzvele == 4) cena += 2;
+                String [] merci = {"Nav", "Kečups +0.50€", "Čili mērce +0.50€", "Barbekjū mērce +0.50€"};
+                int mercIzvele = JOptionPane.showOptionDialog(null,
+                "Izvēlies mērci:",
+                "Mērces",
+                JOptionPane.DEFAULT_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, merci, merci[0]);
+                if (mercIzvele < 0) return;
+                if (mercIzvele != 0) cena += 0.5;
+                
 
                 // Dzērieni
                 String[] drinks = {"Nav", "Cola +2€", "Sula +2€", "Tēja +1€"};
@@ -124,13 +146,17 @@ public class Picerija {
 
                 // Sagatavo pasūtījumu tekstu
                 String pasutijums = "Pica: " + picasNosaukums[picIzvele] +
-                        "\nDzēriens: " + dz +
-                        "\nPiegāde: " + piegade +
-                        (piegade1 == JOptionPane.YES_OPTION ?
-                                "\nVārds: " + klientaVards +
-                                        "\nAdrese: " + adrese +
-                                        "\nTelefons: " + telefons : "") +
-                        "\nCena: " + String.format("%.2f", cena) + "€";
+						"\nPiedevas: " + piedevas[piedIzvele] +
+						"\nMērce: " + merci[mercIzvele] +
+						"\nDzēriens: " + dz +
+						"\nPasūtījuma veids: " + piegade;
+                if (piegade1 == JOptionPane.YES_OPTION) {
+					pasutijums += "\nKlienta vārds: " + klientaVards +
+							"\nAdrese: " + adrese +
+							"\nTelefons: " + telefons;
+				}
+                pasutijums += String.format("\nKopējā cena: %.2f EUR", cena);
+                
 
                 pasutijumi.add(pasutijums);
 
