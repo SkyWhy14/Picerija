@@ -3,13 +3,18 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class Picerija {
     private static Queue<String> pasutijumi = new LinkedList<>();
     private static ArrayList<String> adreses = new ArrayList<>(); // Saglabā piegādes adreses
     private static ArrayList<String > numurs = new ArrayList<>();
-
+    private static ArrayList<String> gatavie = new ArrayList<>();
+    private static ArrayList<String> saglabat = new ArrayList<>();
     public static String VirknesParbaude(String zinojums, String noklusejums) {
         String virkne;
         do {
@@ -28,24 +33,31 @@ public class Picerija {
         frame.setLayout(null);
 
         JButton btnAdd = new JButton("Jauns Pasūtījums");
-        btnAdd.setBounds(30, 30, 400, 40);
+        btnAdd.setBounds(30, 30, 200, 40);
         JButton btnView = new JButton("Skatīt Aktīvos");
-        btnView.setBounds(30, 80, 400, 40);
+        btnView.setBounds(30, 80, 200, 40);
         JButton btnDone = new JButton("Pabeigt nākamo");
-        btnDone.setBounds(30, 130, 400, 40);
+        btnDone.setBounds(30, 130, 200, 40);
         JButton btnAdreses = new JButton("Apskatīt adreses");
-        btnAdreses.setBounds(30, 180, 400, 40);
+        btnAdreses.setBounds(30, 180, 200, 40);
         JButton btnNumurs = new JButton("Apskatīt numurus");
-        btnNumurs.setBounds(30, 240, 400, 40);
+        btnNumurs.setBounds(30, 240, 200, 40);
+        JButton btngatavie = new JButton("Gatavie pasūtījumi");
+        btngatavie.setBounds(250, 30, 200, 40);
+        JButton saglabatGatavie = new JButton("Saglabāt gatavos");
+        saglabatGatavie.setBounds(250, 80, 200, 40);
+        
         
         JButton btnExit = new JButton("Iziet");
-        btnExit.setBounds(30, 290, 400, 40);
+        btnExit.setBounds(30, 290, 200, 40);
 
         frame.add(btnAdd);
         frame.add(btnView);
         frame.add(btnDone);
         frame.add(btnAdreses);
         frame.add(btnNumurs);
+        frame.add(btngatavie);
+        frame.add(saglabatGatavie);
         frame.add(btnExit);
         frame.setVisible(true);
 
@@ -173,6 +185,7 @@ public class Picerija {
             } else {
                 String done = pasutijumi.poll();
                 JOptionPane.showMessageDialog(null, "Pasūtījums izpildīts!\n\n" + done);
+                gatavie.add(done);
             }
         });
 
@@ -200,7 +213,33 @@ public class Picerija {
 						JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-
+        btngatavie.addActionListener(e -> {
+			if (gatavie.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Nav gatavo pasūtījumu.");
+				return;
+			}
+			StringBuilder sb = new StringBuilder();
+			for (String p : gatavie) sb.append("• ").append(p).append("\n\n");
+			JOptionPane.showMessageDialog(null, sb.toString(), "Gatavie Pasūtījumi",
+					JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showConfirmDialog(null, "Vai velaties saglabāt gatavos pasūtījumus?",
+                    "Saglabāt", JOptionPane.YES_NO_OPTION);
+			saglabat.addAll(gatavie);
+		  	
+		});
+      saglabatGatavie.addActionListener(e -> {
+    if (saglabat.isEmpty()) {
+    JOptionPane.showMessageDialog(null, "Nav saglabātu gatavo pasūtījumu.");
+    	return;
+    	  								
+   }else{
+	   StringBuilder sb = new StringBuilder();
+		for (String p : saglabat) sb.append("• ").append(p).append("\n\n");
+		JOptionPane.showMessageDialog(null, sb.toString(), "Saglabātie Gatavie Pasūtījumi",
+		JOptionPane.INFORMATION_MESSAGE);
+		  				
+		}
+    	});
         btnExit.addActionListener(e -> {
             JOptionPane.showMessageDialog(null, "Picerija aizvērta! Uz redzēšanos!");
             System.exit(0);
