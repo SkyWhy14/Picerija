@@ -52,6 +52,23 @@ public class Picerija {
             e.printStackTrace();
         }
     }
+    public static void atskanotMainMenuSound() {
+        try {
+            URL zvansURL = Picerija.class.getResource("/sound/MainMenu.wav");
+            if (zvansURL == null) {
+                JOptionPane.showMessageDialog(null, "Zvanu fails nav atrasts jar!");
+                return;
+            }
+
+            AudioInputStream ais = AudioSystem.getAudioInputStream(zvansURL);
+            Clip c = AudioSystem.getClip();
+            c.open(ais);
+            c.start();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Neizdevās atskaņot skaņu!");
+            e.printStackTrace();
+        }
+    }
     private static String getField(String text, String key) {
         int start = text.indexOf(key);
         if (start < 0) return "";
@@ -102,23 +119,26 @@ public class Picerija {
         frame.setSize(550, 400);
         frame.getContentPane().setBackground(Color.PINK);
         frame.setLayout(null);
-
+        
         // Pogas
         JButton btnAdd = new JButton("Jauns Pasūtījums"); btnAdd.setBounds(30, 30, 200, 40);
         JButton btnView = new JButton("Skatīt Aktīvos"); btnView.setBounds(30, 80, 200, 40);
         JButton btnDone = new JButton("Pabeigt nākamo"); btnDone.setBounds(30, 130, 200, 40);
         JButton btnAdreses = new JButton("Apskatīt adreses"); btnAdreses.setBounds(30, 180, 200, 40);
         JButton btnNumurs = new JButton("Apskatīt numurus"); btnNumurs.setBounds(30, 240, 200, 40);
+        JButton btnRemake = new JButton("Rediget pasūtījumu"); btnRemake.setBounds(250, 130, 200, 40);
         JButton btngatavie = new JButton("Gatavie pasūtījumi"); btngatavie.setBounds(250, 30, 200, 40);
         JButton saglabatGatavie = new JButton("Apskatit saglabatos gatavos"); saglabatGatavie.setBounds(250, 80, 200, 40);
         JButton btnExit = new JButton("Iziet"); btnExit.setBounds(30, 290, 200, 40);
 
         frame.add(btnAdd); frame.add(btnView); frame.add(btnDone);
         frame.add(btnAdreses); frame.add(btnNumurs);
+        frame.add(btnRemake);
         frame.add(btngatavie); frame.add(saglabatGatavie); frame.add(btnExit);
         frame.setVisible(true);
 
         // Jauns pasūtījums
+        atskanotMainMenuSound();
         btnAdd.addActionListener(e -> {
             try {
                 String[] picasNosaukums = {"Margarita - 6€", "Veģetāra - 7€", "Gaļas - 8€"};
@@ -272,6 +292,30 @@ public class Picerija {
                 JOptionPane.showMessageDialog(null, "Saglabāts!");
             }
         });
+        // Rediģēt pasūtījumu
+        btnRemake.addActionListener(e -> {
+			if (pasutijumi.isEmpty()) {
+				JOptionPane.showMessageDialog(null, "Nav aktīvo pasūtījumu ko rediģēt.");
+				return;
+			}
+			String[] pasutijumuMasivs = pasutijumi.toArray(new String[0]);
+			int izvele = JOptionPane.showOptionDialog(
+					null,
+					"Izvēlies pasūtījumu ko rediģēt:",
+					"Rediģēt Pasūtījumu",
+					JOptionPane.DEFAULT_OPTION,
+					JOptionPane.INFORMATION_MESSAGE,
+					null,
+					pasutijumuMasivs,
+					pasutijumuMasivs[0]);
+
+			if (izvele < 0) return;
+			btnAdd.doClick(); 
+			String jaunaisPasutijums = pasutijumi.poll(); 
+			pasutijumi.add(jaunaisPasutijums); 
+			JOptionPane.showMessageDialog(null, "Pasūtījums rediģēts!");
+		
+		});
 
         // Saglabātie gatavie pasūtījumi
         saglabatGatavie.addActionListener(e -> {
