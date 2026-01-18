@@ -1,8 +1,10 @@
 import java.awt.Color;
+import java.awt.Font;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -10,6 +12,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class Picerija {
     private static Queue<String> pasutijumi = new LinkedList<>();
@@ -47,6 +52,46 @@ public class Picerija {
             e.printStackTrace();
         }
     }
+    private static String getField(String text, String key) {
+        int start = text.indexOf(key);
+        if (start < 0) return "";
+        start += key.length();
+        int end = text.indexOf("\n", start);
+        if (end < 0) end = text.length();
+        return text.substring(start, end).trim();
+    }
+    static DefaultTableModel tableModel;
+    static JTable table;
+    public static void raditTabulu(String nosaukums, ArrayList<String> dati) {
+    	 JFrame frame = new JFrame(pasutijumi.isEmpty() ? "Nav aktīvo pasūtījumu" : nosaukums);
+    	    frame.setSize(900, 400);
+
+    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica","Mērce","Dzēriens", "Piedevas", "Cena (EUR)"};
+    	    tableModel = new DefaultTableModel(columns, 0);
+    	    table = new JTable(tableModel);
+
+    	    table.setRowHeight(25);
+    	    table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+    	    table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+    	    table.getTableHeader().setBackground(new Color(230, 230, 230));
+
+    	    for (String p : dati) {
+    	        String vards = getField(p, "Klienta vārds:");
+    	        String adrese = getField(p, "Adrese:");
+    	        String tel = getField(p, "Telefons:");
+    	        String pica = getField(p, "Pica:");
+    	        String merce = getField(p, "Mērce:");
+    	        String dzeriens = getField(p, "Dzēriens:");
+    	        String piedevas = getField(p, "Piedevas:");
+    	        String cena = getField(p, "Kopējā cena:");
+
+    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica,merce,dzeriens, piedevas, cena});
+    	    }
+
+    	    JScrollPane pane = new JScrollPane(table);
+    	    frame.add(pane);
+    	    frame.setVisible(true);
+    }
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Picērija");
@@ -62,7 +107,7 @@ public class Picerija {
         JButton btnAdreses = new JButton("Apskatīt adreses"); btnAdreses.setBounds(30, 180, 200, 40);
         JButton btnNumurs = new JButton("Apskatīt numurus"); btnNumurs.setBounds(30, 240, 200, 40);
         JButton btngatavie = new JButton("Gatavie pasūtījumi"); btngatavie.setBounds(250, 30, 200, 40);
-        JButton saglabatGatavie = new JButton("Saglabāt gatavos"); saglabatGatavie.setBounds(250, 80, 200, 40);
+        JButton saglabatGatavie = new JButton("Apskatit saglabatos gatavos"); saglabatGatavie.setBounds(250, 80, 200, 40);
         JButton btnExit = new JButton("Iziet"); btnExit.setBounds(30, 290, 200, 40);
 
         frame.add(btnAdd); frame.add(btnView); frame.add(btnDone);
@@ -146,9 +191,11 @@ public class Picerija {
 
         // Skatīt aktīvos pasūtījumus
         btnView.addActionListener(e -> {
-            if(pasutijumi.isEmpty()){JOptionPane.showMessageDialog(null,"Nav aktīvu pasūtījumu.");return;}
-            StringBuilder sb=new StringBuilder(); for(String p:pasutijumi) sb.append("• ").append(p).append("\n\n");
-            JOptionPane.showMessageDialog(null,sb.toString(),"Aktīvie Pasūtījumi",JOptionPane.INFORMATION_MESSAGE);
+            if (pasutijumi.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nav aktīvu pasūtījumu.");
+                return;
+            }
+            raditTabulu("Aktīvie pasūtījumi", new ArrayList<>(pasutijumi));
         });
 
         // Pabeigt nākamo
@@ -176,18 +223,31 @@ public class Picerija {
 
         // Gatavie pasūtījumi
         btngatavie.addActionListener(e -> {
-            if(gatavie.isEmpty()){JOptionPane.showMessageDialog(null,"Nav gatavo pasūtījumu."); return;}
-            StringBuilder sb=new StringBuilder(); for(String p:gatavie) sb.append("• ").append(p).append("\n\n");
-            JOptionPane.showMessageDialog(null,sb.toString(),"Gatavie Pasūtījumi",JOptionPane.INFORMATION_MESSAGE);
-            int choice=JOptionPane.showConfirmDialog(null,"Vai vēlaties saglabāt gatavos pasūtījumus?","Saglabāt",JOptionPane.YES_NO_OPTION);
-            if(choice==JOptionPane.YES_OPTION){saglabat.addAll(gatavie); gatavie.clear(); JOptionPane.showMessageDialog(null,"Gatavie pasūtījumi saglabāti!");}
+            if (gatavie.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nav gatavo pasūtījumu.");
+                return;
+            }
+            raditTabulu("Gatavie pasūtījumi", gatavie);
+
+            int cho = JOptionPane.showConfirmDialog(null,
+                    "Vai saglabāt gatavos?",
+                    "Saglabāt",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (cho == JOptionPane.YES_OPTION) {
+                saglabat.addAll(gatavie);
+                gatavie.clear();
+                JOptionPane.showMessageDialog(null, "Saglabāts!");
+            }
         });
 
         // Saglabātie gatavie pasūtījumi
         saglabatGatavie.addActionListener(e -> {
-            if(saglabat.isEmpty()){JOptionPane.showMessageDialog(null,"Nav saglabātu gatavo pasūtījumu."); return;}
-            StringBuilder sb=new StringBuilder(); for(String p:saglabat) sb.append("• ").append(p).append("\n\n");
-            JOptionPane.showMessageDialog(null,sb.toString(),"Saglabātie Gatavie Pasūtījumi",JOptionPane.INFORMATION_MESSAGE);
+            if (saglabat.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Nav saglabātu gatavo pasūtījumu.");
+                return;
+            }
+            raditTabulu("Saglabātie pasūtījumi", saglabat);
         });
 
         // Iziet
