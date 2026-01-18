@@ -119,6 +119,7 @@ public class Picerija {
         frame.setSize(550, 400);
         frame.getContentPane().setBackground(Color.PINK);
         frame.setLayout(null);
+        frame.setResizable(false);
         
         // Pogas
         JButton btnAdd = new JButton("Jauns Pasūtījums"); btnAdd.setBounds(30, 30, 200, 40);
@@ -162,6 +163,12 @@ public class Picerija {
                 } else {
                     JOptionPane.showMessageDialog(null,"Izvēlēta pica: "+picasNosaukums[picIzvele]);
                 }
+                String[] izmeri = {"Mazā (22cm) - 0€","Vidējā (30cm) +2€","Lielā (40cm) +4€"};
+                int izmIzvele = JOptionPane.showOptionDialog(null,"Izvēlies izmēru:","Izmērs",
+						JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,izmeri,izmeri[0]);
+                if (izmIzvele==1)cena+=2;
+                if (izmIzvele==2)cena+=4;
+                
 
                 String[] piedevas = {"Nav","Sēnes +1€","Paprika +1€","Olīvas +1€","Extra siers +2€"};
                 int piedIzvele = JOptionPane.showOptionDialog(null,"Izvēlies papildus piedevas:","Piedevas",
@@ -185,7 +192,7 @@ public class Picerija {
                 if(dzIzvele==3) dzCena+=1;
 
                 if(dzIzvele != 0){
-                    String[] ml = {"Nav","0.250L + 0.25€","330L + 0.50€","500L + 0.75€"};
+                    String[] ml = {"0.250L + 0.25€","330L + 0.50€","500L + 0.75€"};
                     int mlIzvele = JOptionPane.showOptionDialog(null,"Izvēlies tilpumu:","Tilpums",
                             JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,ml,ml[0]);
                     tilpums = ml[mlIzvele]; // saglabājam atsevišķi
@@ -219,6 +226,7 @@ public class Picerija {
                 } else piegade="Uz vietas";
 
                 String pasutijums = "Pica: "+picasNosaukums[picIzvele]+
+                								"\nIzmērs: "+izmeri[izmIzvele]+
                         "\nPiedevas: "+piedevas[piedIzvele]+
                         "\nMērce: "+merci[mercIzvele]+
                         "\nDzēriens: "+dz+
