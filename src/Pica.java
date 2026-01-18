@@ -20,6 +20,13 @@ public abstract class Pica {
     public String getIzmers() {
         return izmers;
     }
+    public String getNosaukums() {
+		return nosaukums;
+	}
+    public String getPiedevas() {
+		return piedevas;
+	}
+   
 
     @Override
     public String toString() {
