@@ -66,14 +66,14 @@ public class Picerija {
     	 JFrame frame = new JFrame(pasutijumi.isEmpty() ? "Nav aktīvo pasūtījumu" : nosaukums);
     	    frame.setSize(900, 400);
 
-    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica","Mērce","Dzēriens", "Piedevas", "Cena (EUR)"};
+    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica", "Mērce", "Dzēriens", "Tilpums", "Piedevas", "Cena (EUR)"};
     	    tableModel = new DefaultTableModel(columns, 0);
     	    table = new JTable(tableModel);
 
     	    table.setRowHeight(25);
     	    table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
     	    table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-    	    table.getTableHeader().setBackground(new Color(230, 230, 230));
+    	    table.getTableHeader().setBackground(new Color(230, 240, 230));
 
     	    for (String p : dati) {
     	        String vards = getField(p, "Klienta vārds:");
@@ -82,10 +82,12 @@ public class Picerija {
     	        String pica = getField(p, "Pica:");
     	        String merce = getField(p, "Mērce:");
     	        String dzeriens = getField(p, "Dzēriens:");
+    	        String tilpums = getField(p, "Tilpums:");
     	        String piedevas = getField(p, "Piedevas:");
     	        String cena = getField(p, "Kopējā cena:");
 
-    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica,merce,dzeriens, piedevas, cena});
+    	    
+    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica, merce, dzeriens, tilpums, piedevas, cena});
     	    }
 
     	    JScrollPane pane = new JScrollPane(table);
@@ -155,8 +157,24 @@ public class Picerija {
                 int dzIzvele = JOptionPane.showOptionDialog(null,"Izvēlies dzērienu:","Dzērieni",
                         JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,drinks,drinks[0]);
                 String dz = drinks[dzIzvele];
-                if (dzIzvele==1||dzIzvele==2)cena+=2;
-                if (dzIzvele==3)cena+=1;
+                String tilpums = "Nav"; // noklusējums
+                double dzCena = 0;
+
+                if(dzIzvele==1||dzIzvele==2) dzCena+=2;
+                if(dzIzvele==3) dzCena+=1;
+
+                if(dzIzvele != 0){
+                    String[] ml = {"Nav","0.250L + 0.25€","330L + 0.50€","500L + 0.75€"};
+                    int mlIzvele = JOptionPane.showOptionDialog(null,"Izvēlies tilpumu:","Tilpums",
+                            JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,ml,ml[0]);
+                    tilpums = ml[mlIzvele]; // saglabājam atsevišķi
+                    if(mlIzvele==1) dzCena+=0.25;
+                    if(mlIzvele==2) dzCena+=0.50;
+                    if(mlIzvele==3) dzCena+=0.75;
+                }
+                cena += dzCena;
+                
+               
 
                 int piegade1 = JOptionPane.showConfirmDialog(null,"Vai izmantot piegādi? (+3€)","Piegāde",JOptionPane.YES_NO_OPTION);
                 String piegade; String klientaVards=""; String adrese=""; String telefons="";
@@ -169,14 +187,16 @@ public class Picerija {
                     adreses.add(adrese); numurs.add(telefons);
                 } else piegade="Uz vietas";
 
-                String pasutijums="Pica: "+picasNosaukums[picIzvele]+
+                String pasutijums = "Pica: "+picasNosaukums[picIzvele]+
                         "\nPiedevas: "+piedevas[piedIzvele]+
                         "\nMērce: "+merci[mercIzvele]+
                         "\nDzēriens: "+dz+
+                        "\nTilpums: "+tilpums+
                         "\nPasūtījuma veids: "+piegade;
-                if (piegade1==JOptionPane.YES_OPTION)
-                    pasutijums+="\nKlienta vārds: "+klientaVards+"\nAdrese: "+adrese+"\nTelefons: "+telefons;
-                pasutijums+=String.format("\nKopējā cena: %.2f EUR",cena);
+                if(piegade1==JOptionPane.YES_OPTION)
+                    pasutijums += "\nKlienta vārds: "+klientaVards+"\nAdrese: "+adrese+"\nTelefons: "+telefons;
+
+                pasutijums += String.format("\nKopējā cena: %.2f EUR", cena);
 
                 pasutijumi.add(pasutijums);
 
