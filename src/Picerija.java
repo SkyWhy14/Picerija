@@ -66,7 +66,7 @@ public class Picerija {
     	 JFrame frame = new JFrame(pasutijumi.isEmpty() ? "Nav aktīvo pasūtījumu" : nosaukums);
     	    frame.setSize(900, 400);
 
-    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica", "Mērce", "Dzēriens", "Tilpums", "Piedevas", "Cena (EUR)"};
+    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica", "Mērce", "Dzēriens", "Tilpums", "Uzkodas","Piedevas", "Cena (EUR)"};
     	    tableModel = new DefaultTableModel(columns, 0);
     	    table = new JTable(tableModel);
 
@@ -83,11 +83,12 @@ public class Picerija {
     	        String merce = getField(p, "Mērce:");
     	        String dzeriens = getField(p, "Dzēriens:");
     	        String tilpums = getField(p, "Tilpums:");
+    	        String uzkoda = getField(p, "Uzkoda:");
     	        String piedevas = getField(p, "Piedevas:");
     	        String cena = getField(p, "Kopējā cena:");
 
     	    
-    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica, merce, dzeriens, tilpums, piedevas, cena});
+    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica, merce, dzeriens, tilpums,uzkoda, piedevas, cena});
     	    }
 
     	    JScrollPane pane = new JScrollPane(table);
@@ -174,6 +175,16 @@ public class Picerija {
                 }
                 cena += dzCena;
                 
+             // Uzkodas
+                String[] uzkoda = {"Nav","Čipsi +1€","Kartupeļu frī +1.50€","Grauzdiņi +2€"};
+                int uzkIzvele = JOptionPane.showOptionDialog(null,"Izvēlies uzkodu:","Uzkodas",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,uzkoda,uzkoda[0]);
+                String uzk = uzkoda[uzkIzvele];
+                if(uzkIzvele==1) cena+=1;
+                if(uzkIzvele==2) cena+=1.5;
+                if(uzkIzvele==3) cena+=2;
+                				
+                
                
 
                 int piegade1 = JOptionPane.showConfirmDialog(null,"Vai izmantot piegādi? (+3€)","Piegāde",JOptionPane.YES_NO_OPTION);
@@ -192,6 +203,7 @@ public class Picerija {
                         "\nMērce: "+merci[mercIzvele]+
                         "\nDzēriens: "+dz+
                         "\nTilpums: "+tilpums+
+                        "\nUzkoda: "+uzk+
                         "\nPasūtījuma veids: "+piegade;
                 if(piegade1==JOptionPane.YES_OPTION)
                     pasutijums += "\nKlienta vārds: "+klientaVards+"\nAdrese: "+adrese+"\nTelefons: "+telefons;
@@ -271,6 +283,6 @@ public class Picerija {
         });
 
         // Iziet
-        btnExit.addActionListener(e -> {JOptionPane.showMessageDialog(null,"Picerija aizvērta! Uz redzēšanos!"); System.exit(0);});
+        btnExit.addActionListener(e -> {JOptionPane.showMessageDialog(null,"Picerija aizvērta! Uz redzēšanos!         :SYBAU"); System.exit(0);});
     }
 }
