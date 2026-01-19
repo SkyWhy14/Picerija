@@ -83,7 +83,7 @@ public class Picerija {
     	 JFrame frame = new JFrame(pasutijumi.isEmpty() ? "Nav aktīvo pasūtījumu" : nosaukums);
     	    frame.setSize(900, 400);
 
-    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica", "Mērce", "Dzēriens", "Tilpums", "Uzkodas","Piedevas", "Cena (EUR)"};
+    	    String[] columns = {"Klients", "Adrese", "Tel", "Pica","Izmērs", "Mērce", "Dzēriens", "Tilpums", "Uzkodas","Piedevas", "Cena (EUR)"};
     	    tableModel = new DefaultTableModel(columns, 0);
     	    table = new JTable(tableModel);
 
@@ -97,6 +97,7 @@ public class Picerija {
     	        String adrese = getField(p, "Adrese:");
     	        String tel = getField(p, "Telefons:");
     	        String pica = getField(p, "Pica:");
+    	        String picasIzmers = getField(p, "Izmērs:");
     	        String merce = getField(p, "Mērce:");
     	        String dzeriens = getField(p, "Dzēriens:");
     	        String tilpums = getField(p, "Tilpums:");
@@ -105,7 +106,7 @@ public class Picerija {
     	        String cena = getField(p, "Kopējā cena:");
 
     	    
-    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica, merce, dzeriens, tilpums,uzkoda, piedevas, cena});
+    	        tableModel.addRow(new Object[]{vards, adrese, tel, pica,picasIzmers, merce, dzeriens, tilpums,uzkoda, piedevas, cena});
     	    }
 
     	    JScrollPane pane = new JScrollPane(table);
@@ -239,9 +240,11 @@ public class Picerija {
                 pasutijums += String.format("\nKopējā cena: %.2f EUR", cena);
 
                 pasutijumi.add(pasutijums);
+              
 
                 JOptionPane.showMessageDialog(null,"Rindā pievienots!\n"+pasutijums,
                         "Pasūtījums",JOptionPane.INFORMATION_MESSAGE);
+               
 
             } catch (Exception ex){
                 JOptionPane.showMessageDialog(null,"Kļūda pasūtījuma procesā!");
