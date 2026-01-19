@@ -101,82 +101,142 @@ public class Picerija {
 
         btnAdd.addActionListener(e -> {
             try {
-                String[] picasNosaukums = {"Margarita - 6€","Veģetāra - 7€","Gaļas - 8€"};
-                int picIzvele = JOptionPane.showOptionDialog(null,"Izvēlies picu:","Pica",
-                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE,
-                        null,picasNosaukums,picasNosaukums[0]);
+                // Picas nosaukumi un bildes
+                String[] picasNosaukums = {"Margarita - 6€", "Veģetāra - 7€", "Gaļas - 8€"};
+                String[] urls = {"/bildes/pica.png", "/bildes/vegana.png", "/bildes/galas.png"};
+                ImageIcon[] picasBildes = new ImageIcon[urls.length];
+
+                for (int i = 0; i < urls.length; i++) {
+                    URL u = Picerija.class.getResource(urls[i]);
+                    if (u != null) {
+                        picasBildes[i] = new ImageIcon(u);
+                        // Samazinām attēlu, lai ietilptu dialogā
+                        picasBildes[i] = new ImageIcon(
+                                picasBildes[i].getImage().getScaledInstance(150, 150, java.awt.Image.SCALE_SMOOTH)
+                        );
+                    } else {
+                        picasBildes[i] = null;
+                    }
+                }
+
+                // Izvēlamies picu
+                int picIzvele = JOptionPane.showOptionDialog(
+                        null, "Izvēlies picu:", "Pica",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+                        null, picasNosaukums, picasNosaukums[0]
+                );
                 if (picIzvele < 0) return;
-                double cena = picIzvele==0?6:picIzvele==1?7:8;
 
+                // Rāda izvēlēto picu ar bildi
+                if (picasBildes[picIzvele] != null) {
+                    JOptionPane.showMessageDialog(null,
+                            "Izvēlētā pica: " + picasNosaukums[picIzvele],
+                            "Pica", JOptionPane.INFORMATION_MESSAGE, picasBildes[picIzvele]);
+                } else {
+                    JOptionPane.showMessageDialog(null,
+                            "Izvēlētā pica: " + picasNosaukums[picIzvele]);
+                }
+
+                // Cena pēc izvēles
+                double cena = picIzvele == 0 ? 6 : picIzvele == 1 ? 7 : 8;
+
+                // Izmērs
                 String[] izmeri = {"Mazā (22cm) - 0€","Vidējā (30cm) +2€","Lielā (40cm) +4€"};
-                int izmIzvele = JOptionPane.showOptionDialog(null,"Izvēlies izmēru:","Izmērs",
-                        JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,izmeri,izmeri[0]);
-                if (izmIzvele==1)cena+=2;
-                if (izmIzvele==2)cena+=4;
+                int izmIzvele = JOptionPane.showOptionDialog(
+                        null, "Izvēlies izmēru:", "Izmērs",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, izmeri, izmeri[0]
+                );
+                if (izmIzvele == 1) cena += 2;
+                if (izmIzvele == 2) cena += 4;
 
+                // Piedevas
                 String[] piedevas = {"Nav","Sēnes +1€","Paprika +1€","Olīvas +1€","Extra siers +2€"};
-                int piedIzvele = JOptionPane.showOptionDialog(null,"Izvēlies piedevas:","Piedevas",
-                        JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,piedevas,piedevas[0]);
-                if (piedIzvele>=1 && piedIzvele<=3)cena+=1;
-                if (piedIzvele==4)cena+=2;
+                int piedIzvele = JOptionPane.showOptionDialog(
+                        null, "Izvēlies piedevas:", "Piedevas",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, piedevas, piedevas[0]
+                );
+                if (piedIzvele >= 1 && piedIzvele <= 3) cena += 1;
+                if (piedIzvele == 4) cena += 2;
 
+                // Izveidojam Pica objektu
                 Pica p;
-                if(piedIzvele == 0) {
+                if (piedIzvele == 0) {
                     p = new ParastaPica(picasNosaukums[picIzvele], cena, izmeri[izmIzvele], piedevas[piedIzvele]);
                 } else {
                     p = new PicaArPiedevas(picasNosaukums[picIzvele], cena, izmeri[izmIzvele], piedevas[piedIzvele], piedevas[piedIzvele]);
                 }
 
+                // Mērce
                 String[] merci = {"Nav","Kečups +0.50€","Čili +0.50€","BBQ +0.50€"};
-                int mercIzvele = JOptionPane.showOptionDialog(null,"Izvēlies mērci:","Mērce",
-                        JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,merci,merci[0]);
-                if (mercIzvele>0)cena+=0.5;
+                int mercIzvele = JOptionPane.showOptionDialog(
+                        null, "Izvēlies mērci:", "Mērce",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, merci, merci[0]
+                );
+                if (mercIzvele > 0) cena += 0.5;
                 p.setMerce(merci[mercIzvele]);
 
+                // Dzēriens
                 String[] drinks = {"Nav","Cola +2€","Sula +2€","Tēja +1€"};
-                int dzIzv = JOptionPane.showOptionDialog(null,"Dzēriens:","Dzērieni",
-                        JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,drinks,drinks[0]);
-                double dzCena = dzIzv==3?1:(dzIzv==1||dzIzv==2)?2:0;
+                int dzIzv = JOptionPane.showOptionDialog(
+                        null, "Dzēriens:", "Dzērieni",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, drinks, drinks[0]
+                );
+                double dzCena = (dzIzv == 3 ? 1 : (dzIzv == 1 || dzIzv == 2 ? 2 : 0));
                 p.setDrinks(drinks[dzIzv]);
 
+                // Tilpums
                 String tilp = "Nav";
                 if (dzIzv != 0) {
                     String[] ml = {"0.25L +0.25€","0.33L +0.50€","0.50L +0.75€"};
-                    int mlIzv = JOptionPane.showOptionDialog(null,"Tilpums:","Tilpums",
-                            JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,ml,ml[0]);
+                    int mlIzv = JOptionPane.showOptionDialog(
+                            null, "Tilpums:", "Tilpums",
+                            JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                            null, ml, ml[0]
+                    );
                     tilp = ml[mlIzv];
-                    if(mlIzv==1) dzCena+=0.25;
-                    if(mlIzv==2) dzCena+=0.50;
-                    if(mlIzv==3) dzCena+=0.75;
+                    if (mlIzv == 1) dzCena += 0.25;
+                    if (mlIzv == 2) dzCena += 0.50;
+                    if (mlIzv == 3) dzCena += 0.75;
                 }
                 p.setTilpums(tilp);
                 cena += dzCena;
 
+                // Uzkoda
                 String[] uzkoda = {"Nav","Čipsi +1€","Frī +1.50€","Grauzdiņi +2€"};
-                int uzkIzv = JOptionPane.showOptionDialog(null,"Uzkoda:","Uzkodas",
-                        JOptionPane.DEFAULT_OPTION,JOptionPane.QUESTION_MESSAGE,null,uzkoda,uzkoda[0]);
-                if(uzkIzv==1)cena+=1;
-                if(uzkIzv==2)cena+=1.5;
-                if(uzkIzv==3)cena+=2;
+                int uzkIzv = JOptionPane.showOptionDialog(
+                        null, "Uzkoda:", "Uzkodas",
+                        JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+                        null, uzkoda, uzkoda[0]
+                );
+                if (uzkIzv == 1) cena += 1;
+                if (uzkIzv == 2) cena += 1.5;
+                if (uzkIzv == 3) cena += 2;
                 p.setUzkoda(uzkoda[uzkIzv]);
 
+                // Piegāde un klienta info
                 int pieg = JOptionPane.showConfirmDialog(null,"Piegāde? (+3€)","Piegāde",JOptionPane.YES_NO_OPTION);
-                if (pieg==JOptionPane.YES_OPTION) {
-                    cena+=3;
-                    String v=VirknesParbaude("Klienta vārds:","Jānis"); if(v==null)return;
-                    String a=VirknesParbaude("Adrese:","Brīvības 10");   if(a==null)return;
-                    String t=VirknesParbaude("Telefons:","+371 0000000"); if(t==null)return;
+                if (pieg == JOptionPane.YES_OPTION) {
+                    cena += 3;
+                    String v = VirknesParbaude("Klienta vārds:","Jānis"); if(v == null) return;
+                    String a = VirknesParbaude("Adrese:","Brīvības 10"); if(a == null) return;
+                    String t = VirknesParbaude("Telefons:","+371 0000000"); if(t == null) return;
                     p.setKlientaInfo(v,a,t,"Piegāde");
                     adreses.add(a); numurs.add(t);
                 } else {
-                    p.setKlientaInfo("Uz vietas","-", "-","Uz vietas");
+                    p.setKlientaInfo("Uz vietas","-","-","Uz vietas");
                 }
 
                 pasutijumi.add(p);
-
-                JOptionPane.showMessageDialog(null,"Pievienots!");
-            } catch (Exception ex) { }
+                JOptionPane.showMessageDialog(null,"Pasūtījums pievienots!");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
+
 
         btnView.addActionListener(e -> {
             if(pasutijumi.isEmpty()) {JOptionPane.showMessageDialog(null,"Nav aktīvu!");return;}
