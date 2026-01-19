@@ -1,40 +1,49 @@
 public abstract class Pica {
-    private String nosaukums;
-    private double cena;
-    private String izmers;
-    private String piedevas;
-    private String papildusPiedevas;
+    protected String nosaukums;
+    protected double cena;
+    protected String izmers;
+    protected String piedevas;
+    protected String papildus;
+    protected String klientaVards;
+    protected String adrese;
+    protected String telefons;
+    protected String piegade;
+    protected String merce;
+    protected String dzeriens;
+    protected String tilpums;
+    protected String uzkoda;
 
-    public Pica(String nosaukums, double cena, String izmers, String piedevas, String papildusPiedevas) {
+    public Pica(String nosaukums, double cena, String izmers, String piedevas) {
         this.nosaukums = nosaukums;
         this.cena = cena;
         this.izmers = izmers;
         this.piedevas = piedevas;
-        this.papildusPiedevas = papildusPiedevas;
     }
 
-    public String getNosaukums() {
-        return nosaukums;
+    public String getNosaukums(){ return nosaukums; }
+    public double getCena(){ return cena; }
+    public String getIzmers(){ return izmers; }
+    public String getPiedevas(){ return piedevas; }
+    public String getPapildus(){ return papildus; }
+    public String getVards(){ return klientaVards; }
+    public String getAdrese(){ return adrese; }
+    public String getTel(){ return telefons; }
+    public String getMauce(){ return merce; }
+    public String getDrinks(){ return dzeriens; }
+    public String getTilpums(){ return tilpums; }
+    public String getUzkoda(){ return uzkoda; }
+    public String getPiegade(){ return piegade; }
+
+    public void setKlientaInfo(String v, String a, String t, String pieg) {
+        klientaVards = v;
+        adrese = a;
+        telefons = t;
+        piegade = pieg;
     }
 
-    public double getCena() {
-        return cena;
-    }
-
-    public String getIzmers() {
-        return izmers;
-    }
-
-    public String getPiedevas() {
-        String all = piedevas;
-        if (papildusPiedevas != null && !papildusPiedevas.isEmpty()) {
-            all += ", " + papildusPiedevas;
-        }
-        return all;
-    }
-
-    @Override
-    public String toString() {
-        return nosaukums + " | " + izmers + " | " + getPiedevas() + " | " + cena + " EUR";
-    }
+    public void setPapildus(String x) { papildus = x; }
+    public void setMerce(String m) { merce = m; }
+    public void setDrinks(String d) { dzeriens = d; }
+    public void setTilpums(String t) { tilpums = t; }
+    public void setUzkoda(String u) { uzkoda = u; }
 }
