@@ -13,6 +13,10 @@ public abstract class Pica {
         this.papildusPiedevas = papildusPiedevas;
     }
 
+    public String getNosaukums() {
+        return nosaukums;
+    }
+
     public double getCena() {
         return cena;
     }
@@ -20,20 +24,17 @@ public abstract class Pica {
     public String getIzmers() {
         return izmers;
     }
-    public String getNosaukums() {
-		return nosaukums;
-	}
+
     public String getPiedevas() {
-		return piedevas;
-	}
-   
+        String all = piedevas;
+        if (papildusPiedevas != null && !papildusPiedevas.isEmpty()) {
+            all += ", " + papildusPiedevas;
+        }
+        return all;
+    }
 
     @Override
     public String toString() {
-        String allPiedevas = piedevas;
-        if (papildusPiedevas != null && !papildusPiedevas.isEmpty()) {
-            allPiedevas += ", " + papildusPiedevas;
-        }
-        return nosaukums + " | " + izmers + " | " + allPiedevas + " | " + cena + " EUR";
+        return nosaukums + " | " + izmers + " | " + getPiedevas() + " | " + cena + " EUR";
     }
 }
